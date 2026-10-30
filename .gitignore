@@ -30,3 +30,9 @@ Thumbs.db
 *.p8
 *.keychain
 *.keychain-db
+
+# Shadow Slave animatic: generated artefacts
+/shadowSlave/frames/
+/shadowSlave/audio/
+/shadowSlave/work/
+/shadowSlave/*.mp4
