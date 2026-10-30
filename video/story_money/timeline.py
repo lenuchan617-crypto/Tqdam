@@ -20,10 +20,10 @@ TOTAL = 360.0
 FPS = 30
 W, H = 1080, 1920
 
-TEMPO = 0.98          # storytime pace: unhurried, a touch below neutral
+TEMPO = 1.0           # natural read: the new voice already carries the energy
 LEAD = 0.75           # silence before the first word of a chapter
 TAIL = 1.35           # hold after the last word
-CARD_MAX = 13.0       # a graphic intermission never runs longer than this
+CARD_MAX = 11.7       # a graphic intermission never runs longer than this
 
 CHAPTERS = [
     # (id, voice file, image, kicker, headline, second line)
@@ -57,6 +57,18 @@ INTERMISSIONS = [
         ("КАМЕРА · КОНСОЛЬ · ЧАСЫ", "line", 0.95, 3.8),
         ("КРОССОВКИ", "line", 1.95, 3.0),
         ("+31 000", "number", 3.20, 4.4),
+    ]),
+    (3, 9.0, [
+        ("ЧТО В ТАБЛИЦЕ", "kicker", 0.15, 2.6),
+        ("ДОЛГ · СТАВКА", "line", 0.95, 3.4),
+        ("ПЛАТЁЖ · СРОК", "line", 2.10, 3.4),
+        ("ЦИФРА ПУГАЕТ, ПОКА ЕЁ НЕ ВИДИШЬ", "line", 3.60, 4.4),
+    ]),
+    (10, 9.0, [
+        ("ИТОГ ЗА 60 ДНЕЙ", "kicker", 0.15, 2.6),
+        ("−14 000 К ДОЛГУ", "line", 1.00, 3.4),
+        ("0 НОВЫХ КРЕДИТОВ", "line", 2.20, 3.4),
+        ("ПОДУШКА: 10% КАЖДЫЙ МЕСЯЦ", "line", 3.80, 4.4),
     ]),
     (8, 9.0, [
         ("БЫЛО / СТАЛО", "kicker", 0.15, 2.4),
