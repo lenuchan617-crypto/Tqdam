@@ -22,7 +22,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 FRAMES = os.path.join(ROOT, "frames")
 AUDIO = os.path.join(ROOT, "audio", "ambience.wav")
-OUT = os.path.join(ROOT, "shadowSlave.mp4")
+OUT = os.path.join(ROOT, "shadowSlave_v2.mp4")
 FONT = "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
 FONTB = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
 FONTS = "/usr/share/fonts/truetype/dejavu/DejaVuSerif.ttf"
@@ -42,7 +42,7 @@ def smooth(u):
 # ------------------------------------------------------------------ shots
 def S(img, ts, te, fi, fo, z, c, **kw):
     d = dict(img=img, ts=ts, te=te, fi=fi, fo=fo, z=z, c=c)
-    d.update(sat=0.6, con=1.06, exp=1.0, tint=(1.0, 1.0, 1.0), grain=0.05, lift=0.0,
+    d.update(sat=0.6, con=1.06, exp=1.0, tint=(1.0, 1.0, 1.0), grain=0.05, lift=0.0, gamma=1.0,
              vig=0.34, flicker=0, dark=1.0, shake=(), flash=(), kind="img")
     d.update(kw)
     return d
@@ -93,9 +93,9 @@ SHOTS = [
     S("s11_hero_falls_dawn", 204.5, 220.0, 1.5, 1.2, (1.55, 1.28), ((0.44, 0.56), (0.46, 0.54)),
       sat=0.52, con=1.10, exp=0.92, tint=(1.00, 0.99, 1.00), grain=0.05, vig=0.36),
     S("s12_bell_shadow", 218.8, 232.0, 1.2, 1.5, (1.00, 1.18), ((0.50, 0.50), (0.50, 0.48)),
-      sat=0.42, con=1.16, exp=1.22, lift=0.026, tint=(0.90, 0.95, 1.12), grain=0.055, vig=0.36),
+      sat=0.42, con=1.10, exp=1.40, lift=0.020, gamma=0.55, tint=(0.90, 0.95, 1.12), grain=0.055, vig=0.36),
     S("s12_bell_shadow", 230.5, 240.0, 1.5, 1.2, (1.55, 1.34), ((0.50, 0.48), (0.50, 0.48)),
-      sat=0.40, con=1.20, exp=1.10, lift=0.038, tint=(0.88, 0.94, 1.14), grain=0.05, vig=0.38, dark=0.55,
+      sat=0.40, con=1.10, exp=1.45, lift=0.015, gamma=0.55, tint=(0.88, 0.94, 1.14), grain=0.05, vig=0.38, dark=0.80,
       flash=((233.0, 0.10, 0.5), (236.2, 0.08, 0.6), (238.6, 0.06, 0.5))),
     # --- scene 6: the evaluation
     S("s13_temple_altar", 238.8, 254.0, 1.2, 1.5, (1.00, 1.16), ((0.50, 0.52), (0.50, 0.48)),
@@ -103,7 +103,7 @@ SHOTS = [
     S("s14_sunny_on_altar", 252.5, 268.0, 1.5, 1.2, (1.00, 1.18), ((0.50, 0.50), (0.50, 0.52)),
       sat=0.55, con=1.10, exp=0.88, tint=(0.93, 0.96, 1.08), grain=0.055, vig=0.44),
     S("s15_shadows_tear", 266.8, 282.0, 1.2, 1.5, (1.05, 1.30), ((0.50, 0.50), (0.50, 0.54)),
-      sat=0.42, con=1.16, exp=1.06, lift=0.012, tint=(0.90, 0.95, 1.12), grain=0.06, vig=0.40,
+      sat=0.42, con=1.16, exp=1.14, lift=0.012, tint=(0.90, 0.95, 1.12), grain=0.06, vig=0.40,
       shake=((268.5, 9), (271.6, 11), (274.8, 13), (278.2, 15)),
       flash=((270.5, 0.16, 0.35), (273.2, 0.18, 0.35), (276.0, 0.20, 0.35), (279.0, 0.22, 0.4))),
     S(None, 280.5, 290.0, 1.5, 0.6, (1.08, 0.98), ((0.5, 0.5), (0.5, 0.5)),
@@ -340,11 +340,14 @@ def cropArr(arr, z, cx, cy):
                       np.float32) / 255.0
 
 
-def grade(a, sat, con, exp, tint, lift=0.0):
+def grade(a, sat, con, exp, tint, lift=0.0, gamma=1.0):
     l = a[:, :, 0] * 0.2126 + a[:, :, 1] * 0.7152 + a[:, :, 2] * 0.0722
     a = l[..., None] + (a - l[..., None]) * sat
     a = (a - 0.5) * con + 0.5 + lift
     a *= exp
+    if gamma != 1.0:
+        np.clip(a, 0, None, out=a)
+        np.power(a, gamma, out=a)
     a[..., 0] *= tint[0]
     a[..., 1] *= tint[1]
     a[..., 2] *= tint[2]
@@ -413,7 +416,7 @@ def renderShot(sh, t):
         sx, sy = shakeAt(sh, t)
         pim = cropFrame(im, z, cx, cy, (sx, sy))
         a = np.asarray(pim, np.float32) / 255.0
-    a = grade(a, sh["sat"], sh["con"], sh["exp"], sh["tint"], sh["lift"])
+    a = grade(a, sh["sat"], sh["con"], sh["exp"], sh["tint"], sh["lift"], sh["gamma"])
     if sh["flicker"]:
         a *= flickerAt(t, sh["flicker"])
     if sh["dark"] != 1.0:
