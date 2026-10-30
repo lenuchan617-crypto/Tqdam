@@ -121,6 +121,7 @@ def ir(dur=3.0, decay=4.0):
 CAVE = ir(3.4, 4.2)
 ROOM = ir(0.9, 7.0)
 HALL = ir(5.5, 2.6)
+GOD = ir(3.6, 3.8)
 
 
 def pitch(x, factor):
@@ -407,11 +408,11 @@ place(269.0, growl(3.0, 44), 0.22, 0.0)
 for tt in (270.5, 273.2, 276.0, 279.0):               # shadows tear it apart
     place(tt, conv(wetTear(1.6), CAVE), 0.34, rng.uniform(-0.6, 0.6))
     place(tt + 0.1, conv(thud(1.4, 55, 0.8, 6), CAVE), 0.24, 0.0)
-place(272.0, pad(30.0, 55.0, 1.0), 0.13)
-place(272.0, pad(30.0, 82.5, 1.0) * 0.6, 0.08)
+place(272.0, pad(23.0, 55.0, 1.0), 0.12)
+place(272.0, pad(23.0, 82.5, 1.0) * 0.6, 0.07)
 place(281.0, shimmer(11.0, 1400.0), 0.075)
 place(281.0, shimmer(11.0, 2100.0), 0.045)
-place(290.0, pad(11.0, 55.0, 1.0), 0.10)
+place(291.5, pad(9.0, 55.0, 1.0), 0.07)
 
 # ---------------------------------------------------------------- voices
 def readWav(path):
@@ -439,7 +440,7 @@ VO = [
     ("vo15", 278.3, "spell"),
     ("vo16", 284.2, "spell"),
     ("vo17", 288.4, "spell"),
-    ("vo18", 295.0, "whisper"),
+    ("vo18", 295.9, "whisper"),
 ]
 
 print("mixing voices ...")
@@ -449,8 +450,8 @@ for name, start, kind in VO:
         y = conv(x, ROOM) * 0.12 + x * 0.95
         y = norm(y) * 0.92
     elif kind == "whisper":
-        y = conv(x, ROOM) * 0.2 + x * 0.85
-        y = norm(y) * 0.78
+        y = conv(x, ROOM) * 0.14 + x * 0.9
+        y = norm(y) * 0.95
     elif kind == "shout":
         y = conv(x, CAVE) * 0.35 + x
         y = norm(y) * 0.85
@@ -460,9 +461,9 @@ for name, start, kind in VO:
     else:  # spell
         low = pitch(x, 1.30)
         y = norm(low) * 0.9
-        y = y + np.concatenate([np.zeros(int(SR * 0.42)), y[:-int(SR * 0.42)]]) * 0.34
-        y = y + np.concatenate([np.zeros(int(SR * 0.85)), y[:-int(SR * 0.85)]]) * 0.20
-        y = conv(y, HALL) * 0.65 + y * 0.75
+        y = y + np.concatenate([np.zeros(int(SR * 0.42)), y[:-int(SR * 0.42)]]) * 0.30
+        y = y + np.concatenate([np.zeros(int(SR * 0.85)), y[:-int(SR * 0.85)]]) * 0.16
+        y = conv(y, GOD) * 0.42 + y * 0.85
         y = norm(y) * 0.95
     place(start, y, 1.0, 0.0)
     print("  %s @ %.1f (%.2fs, %s)" % (name, start, len(x) / 44100.0, kind))
