@@ -36,3 +36,7 @@ video/out
 video/vo
 video/vo_trim
 video/__pycache__
+video/story_money/out
+video/story_money/vo
+video/story_money/vo_trim
+video/story_money/__pycache__
