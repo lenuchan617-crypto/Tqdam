@@ -30,3 +30,9 @@ Thumbs.db
 *.p8
 *.keychain
 *.keychain-db
+
+# video pipeline generated artefacts
+video/out
+video/vo
+video/vo_trim
+video/__pycache__
